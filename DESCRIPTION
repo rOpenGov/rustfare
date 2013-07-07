@@ -1,0 +1,21 @@
+Package: rustfare
+Type: Package
+Title: rustfare: toolbox for R language for open welfare data from Russian Federation
+Version: 0.1.1
+Date: 2013-06-20
+Author: Markus Kainu
+Maintainer: Markus Kainu <markuskainu@gmail.com>
+VignetteBuilder: knitr
+Depends: R (>= 2.15.0)
+URL: http://markuskainu,fi/rustfare, https://github.com/muuankarski/rustfare
+Suggests: knitr
+Description: rustfare: toolbox for R language for open welfare data from Russian Federation
+LazyData: TRUE
+License: MIT
+Collate:
+    'rosstat.R'
+    'oecd.R'
+    'qog.R'
+    'spatial.R'
+    'mapplot.R'
+    'rustfare.R'

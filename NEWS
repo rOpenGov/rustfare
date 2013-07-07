@@ -1,0 +1,7 @@
+    CHANGES IN rustfare VERSION 0.1.1
+		
+CHANGES
+  *  Function names changed from "Providername"Data() to Get"Providername"(). As function RosstatData() is changed to GetRosstat())
+*  Function names changed from "Providername"Indicator() to Indicator"Providername"(). As function RosstatIndicator() is changed to IndicatorRosstat())
+  *  Documentation added
+  * package name changed to rustfare with no capital letters
