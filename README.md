@@ -1,4 +1,4 @@
-# rustfaRe: toolbox for R language for open welfare data from Russian Federation
+# rustfare: toolbox for R language for open welfare data from Russian Federation
 
 ## Links
 
@@ -10,8 +10,8 @@
 
 ```r
 library(devtools)
-install_github(repo = "rustfaRe", username = "muuankarski")
-library(rustfaRe)
+install_github(repo = "rustfare", username = "muuankarski")
+library(rustfare)
 ```
 
 
