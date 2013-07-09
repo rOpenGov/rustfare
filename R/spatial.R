@@ -26,11 +26,11 @@ GetRusGADM <- function(level) {
     load(url("http://gadm.org/data/rda/RUS_adm0.RData"))
   }
   if (level == "federal_district") {
-    load(url("http://research.muuankarski.org/rustfare/data/shape/ShapeFederalDistrict.RData"))
+    load(url("http://markuskainu.fi/rustfare/data/ShapeFederalDistrict.RData"))
     gadm <- ShapeFederalDistrict
   }
   if (level == "region") {
-    load(url("http://research.muuankarski.org/rustfare/data/shape/ShapeRegion.RData"))
+    load(url("http://markuskainu.fi/rustfare/data/ShapeRegion.RData"))
     gadm <- ShapeRegion
   }
   if (level == "rayon") {
