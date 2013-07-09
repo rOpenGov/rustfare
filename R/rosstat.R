@@ -30,6 +30,57 @@ IndicatorRosstat <- function(urli = "http://research.muuankarski.org/rustfare/da
   RosstatIndicatorData
 }
 
+#' Scrape the raw html-table data
+#' 
+#' Scrape the raw html-table data from Rosstat Regional Statistics
+#'
+#' @param indicator Character string. Select indicator from the \code{indicator} column 
+#' of data frame returned by function \code{RosstatIndicator}.
+#'
+#' @return data frame with raw data from html-table
+#' 
+#' @export
+#' @examples # raw.html.data <- ScrapeData("")
+#' @author Markus Kainu <markuskainu(at)gmail.com> 
+
+ScrapeData <- function(indicator="mortality_rate"){
+  library(XML)
+  load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  condition <- indicator
+  urldata <- subset(RosstatIndicatorData, indicator == condition)
+  url <- as.character(urldata[1,2])
+  x <- readHTMLTable(url, header = TRUE, dec=",")
+  x=x[[1]]
+  x
+}
+
+#' Scrape the raw html-table data (skipping the 1st row)
+#' 
+#' Scrape the raw html-table data from Rosstat Regional Statistics
+#' for tables with rowspan used on first row.
+#'
+#' @param indicator Character string. Select indicator from the \code{indicator} column 
+#' of data frame returned by function \code{RosstatIndicator}.
+#'
+#' @return data frame with raw data from html-table
+#' 
+#' @export
+#' @examples # raw.html.data <- ScrapeData_skip1("")
+#' @author Markus Kainu <markuskainu(at)gmail.com> 
+
+ScrapeData_skip1 <- function(indicator){
+  library(XML)
+  load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  condition <- indicator
+  urldata <- subset(RosstatIndicatorData, indicator == condition)
+  url <- as.character(urldata[1,2])
+  x <- readHTMLTable(url, header = TRUE, dec=",", skip.rows=1)
+  x=x[[1]]  
+  x
+}
+
+
+
 #' Download data from Rosstat Regional Statistics
 #' 
 #' Download data based on indicator and aggregation level 
@@ -64,37 +115,39 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   library(reshape2)
   library(stringr)
   # extract columns with TOTAL values
-  if (indicator %in% c("sports_halls",
-                       "swimming_pools",
-                       "planar_sports_facilities_(playgrounds_and_fields)",
-                       "stadiums_with_stands_for_1500_seats_or_more",
-                       "life_expectancy_total",
-                       "life_expectancy_men",
-                       "life_expectancy_women",
-                       "population_total",
-                       "population_urban",
-                       "population_rural")) {
-    load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
-    condition <- indicator
-    urldata <- subset(RosstatIndicatorData, indicator == condition)
-    url <- as.character(urldata[1,2])
-    x <- readHTMLTable(url, header = TRUE, dec=",")
-    x=x[[1]]
-    x  
-  }  
-  else {
-    load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
-    condition <- indicator
-    urldata <- subset(RosstatIndicatorData, indicator == condition)
-    url <- as.character(urldata[1,2])
-    x <- readHTMLTable(url, header = TRUE, dec=",", skip.rows=1)
-    x=x[[1]]  
-    x
-  }
+  #   if (indicator %in% c("sports_halls",
+  #                        "swimming_pools",
+  #                        "planar_sports_facilities_(playgrounds_and_fields)",
+  #                        "stadiums_with_stands_for_1500_seats_or_more",
+  #                        "life_expectancy_total",
+  #                        "life_expectancy_men",
+  #                        "life_expectancy_women",
+  #                        "population_total",
+  #                        "population_urban",
+  #                        "population_rural")) {
+  #     load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  #     condition <- indicator
+  #     urldata <- subset(RosstatIndicatorData, indicator == condition)
+  #     url <- as.character(urldata[1,2])
+  #     x <- readHTMLTable(url, header = TRUE, dec=",")
+  #     x=x[[1]]
+  #     x  
+  #   }  
+  #   else {
+  #     load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  #     condition <- indicator
+  #     urldata <- subset(RosstatIndicatorData, indicator == condition)
+  #     url <- as.character(urldata[1,2])
+  #     x <- readHTMLTable(url, header = TRUE, dec="," , skip.rows=1
+  #                        )
+  #     x=x[[1]]  
+  #     x
+  #   }
   ##########################################
   # extracting the right columns from non-harmonized html-tables
   
   if (indicator == "average_percapita_income") {
+    x <- suppressWarnings(ScrapeData(indicator))
     y <- x[,c(1,3:14)]
     names(y) <- c("region","x1995","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
@@ -103,6 +156,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     
   }
   if (indicator == "gross_regional_product") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x
     names(y) <- c("region","x2000","x2002","x2003","x2004","x2005",
                   "x2006","x2007","x2008","x2009","x2010")
@@ -111,18 +165,21 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   ######################################
   # Population
   if (indicator == "population_total") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1:4)]
     names(y) <- c("region","x1989","x2002","x2010")
     y.long <- melt(y, id.vars="region")
   }
   
   if (indicator == "population_urban") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,5:7)]
     names(y) <- c("region","x1989","x2002","x2010")
     y.long <- melt(y, id.vars="region")
   }
   
   if (indicator == "population_rural") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,8:10)]
     names(y) <- c("region","x1989","x2002","x2010")
     y.long <- melt(y, id.vars="region")
@@ -130,16 +187,19 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   ######################################
   # Life expectancy
   if (indicator == "life_expectancy_total") {
-    y <- x[,c(1,2,3,8)]
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
+    y <- x[,c(1,2,5,8)]
     names(y) <- c("region","x2000","x2005","x2009")
     y.long <- melt(y, id.vars=c("region"))
   }
   if (indicator == "life_expectancy_men") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,3,6,9)]
     names(y) <- c("region","x2000","x2005","x2009")
     y.long <- melt(y, id.vars=c("region"))
   }
   if (indicator == "life_expectancy_women") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,4,7,10)]
     names(y) <- c("region","x2000","x2005","x2009")
     y.long <- melt(y, id.vars=c("region"))
@@ -149,8 +209,9 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   if (indicator %in% c("mortality_rate",
                        "infant_mortality_rate",
                        "crude_birth_rate")) {
-    y <- x[,c(1,3:14)]
-    names(y) <- c("region","x1995","x2000","x2001",
+    x <- suppressWarnings(ScrapeData(indicator))
+    y <- x[,c(1:14)]
+    names(y) <- c("region","x1990","x1995","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
                   "x2006","x2007","x2008","x2009","x2010")
     y.long <- melt(y, id.vars="region")
@@ -158,6 +219,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   
   if (indicator %in% c("average_size_of_pensions",
                        "average_nominal_monthly_salary")) {
+    x <- suppressWarnings(ScrapeData(indicator))
     y <- x[,c(1,3:14)]
     names(y) <- c("region","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
@@ -168,6 +230,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   ######################################
   ## Culture & sports
   if (indicator == "number_of_theater_goers_per_1000_population") {
+    x <- suppressWarnings(ScrapeData(indicator))  
     y <- x[,c(1:14)]
     names(y) <- c("region","x1990","x1995","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
@@ -175,6 +238,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "number_of_visits_to_museums_per_1000_population") {
+    x <- suppressWarnings(ScrapeData(indicator))  
     y <- x[,c(1:14)]
     names(y) <- c("region","x1990","x1995","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
@@ -182,6 +246,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "publication_of_newspapers_per_1000_people") {
+    x <- suppressWarnings(ScrapeData(indicator))  
     y <- x[,c(1:14)]
     names(y) <- c("region","x1990","x1995","x2000","x2001",
                   "x2002","x2003","x2004","x2005",
@@ -189,6 +254,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "stadiums_with_stands_for_1500_seats_or_more") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,2:5)]
     names(y) <- c("region","x1995",
                   "x2005",
@@ -196,6 +262,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "planar_sports_facilities_(playgrounds_and_fields)") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,6:9)]
     names(y) <- c("region","x1995",
                   "x2005",
@@ -203,6 +270,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "sports_halls") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,10:13)]
     names(y) <- c("region","x1995",
                   "x2005",
@@ -210,6 +278,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
     y.long <- melt(y, id.vars="region")
   }
   if (indicator == "swimming_pools") {
+    x <- suppressWarnings(ScrapeData_skip1(indicator))  
     y <- x[,c(1,14:17)]
     names(y) <- c("region","x1995",
                   "x2005",
@@ -230,7 +299,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   y.long$value <- factor(y.long$value)
   y.long$variable <- factor(y.long$variable)
   
-  y.long$value <- as.numeric(levels(y.long$value))[y.long$value]
+  y.long$value <- suppressWarnings(as.numeric(levels(y.long$value))[y.long$value])
   y.long$variable <- as.numeric(levels(y.long$variable))[y.long$variable]
   
   y.long$list <- str_extract_all(y.long$region, "[а-яА-я]+")
@@ -297,5 +366,3 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   }
   
 }
-
-
