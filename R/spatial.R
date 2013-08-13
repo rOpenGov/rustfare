@@ -31,6 +31,13 @@ GetRusGADM <- function(level) {
   }
   if (level == "region") {
     load(url("http://markuskainu.fi/material/data/rustfare/shape/ShapeRegion.RData"))
+=======
+    load(url("http://markuskainu.fi/material/data/rustfare/ShapeFederalDistrict.RData"))
+    gadm <- ShapeFederalDistrict
+  }
+  if (level == "region") {
+    load(url("http://markuskainu.fi/material/data/rustfare/ShapeRegion.RData"))
+>>>>>>> ea96807a73bd1f90d16a06659543910c3df6f70b
     gadm <- ShapeRegion
   }
   if (level == "rayon") {
