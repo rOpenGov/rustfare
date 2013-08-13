@@ -25,7 +25,7 @@
 #' @examples # available.indicators <- IndicatorRosstat()
 #' @author Markus Kainu <markuskainu(at)gmail.com> 
 
-IndicatorRosstat <- function(urli = "http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData") {
+IndicatorRosstat <- function(urli = "http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData") {
   load(url(urli))
   RosstatIndicatorData
 }
@@ -45,7 +45,7 @@ IndicatorRosstat <- function(urli = "http://research.muuankarski.org/rustfare/da
 
 ScrapeData <- function(indicator="mortality_rate"){
   library(XML)
-  load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  load(url("http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData"))
   condition <- indicator
   urldata <- subset(RosstatIndicatorData, indicator == condition)
   url <- as.character(urldata[1,2])
@@ -70,7 +70,7 @@ ScrapeData <- function(indicator="mortality_rate"){
 
 ScrapeData_skip1 <- function(indicator){
   library(XML)
-  load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  load(url("http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData"))
   condition <- indicator
   urldata <- subset(RosstatIndicatorData, indicator == condition)
   url <- as.character(urldata[1,2])
@@ -125,7 +125,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   #                        "population_total",
   #                        "population_urban",
   #                        "population_rural")) {
-  #     load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  #     load(url("http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData"))
   #     condition <- indicator
   #     urldata <- subset(RosstatIndicatorData, indicator == condition)
   #     url <- as.character(urldata[1,2])
@@ -134,7 +134,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   #     x  
   #   }  
   #   else {
-  #     load(url("http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData"))
+  #     load(url("http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData"))
   #     condition <- indicator
   #     urldata <- subset(RosstatIndicatorData, indicator == condition)
   #     url <- as.character(urldata[1,2])
@@ -332,7 +332,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   
   # translation
   if (level == "federal") {
-    load(url("http://research.muuankarski.org/rustfare/data/RosstatRegionKey.RData"))
+    load(url("http://markuskainu.fi/material/data/rustfare/RosstatRegionKey.RData"))
     key <- subset(RosstatRegionKey, level == "federal")
     regiodata <- merge(regiodata,key, 
                        by="id_name")
@@ -342,7 +342,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
                                "id_shape","indicator"))
   }
   if (level == "federal_district") {
-    load(url("http://research.muuankarski.org/rustfare/data/RosstatRegionKey.RData"))
+    load(url("http://markuskainu.fi/material/data/rustfare/RosstatRegionKey.RData"))
     key <- subset(RosstatRegionKey, level == "federal_district")
     regiodata <- merge(regiodata,key, 
                        by="id_name")
@@ -353,7 +353,7 @@ GetRosstat <- function(indicator = "mortality_rate", level = "federal_district")
   }
   
   if (level == "region") {
-    load(url("http://research.muuankarski.org/rustfare/data/RosstatRegionKey.RData"))
+    load(url("http://markuskainu.fi/material/data/rustfare/RosstatRegionKey.RData"))
     key <- subset(RosstatRegionKey, level == "region")
     regiodata <- merge(regiodata,key, 
                        by="id_name")
