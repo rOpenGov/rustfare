@@ -27,7 +27,6 @@ RosstatMapPlot <- function(indicator="average_percapita_income",vuosi=2008,level
   library(ggplot2)
   library(rustfare)
   library(utils)
-  library(maptools)
   map <- GetRusGADM(level)
   map@data$id <- rownames(map@data)
   map.points <- fortify(map, region="id")
@@ -35,7 +34,6 @@ RosstatMapPlot <- function(indicator="average_percapita_income",vuosi=2008,level
   df <- suppressWarnings(GetRosstat(indicator,level))
   df.year <- subset(df, year == vuosi)
   choro <- merge(map.df,df.year, by.x="ID_1",by.y="id_shape")
-  #  choro$rate <- cut_interval(choro$value, 5)
   choro <- choro[order(choro$order),]
   
   ggplot(choro, aes(long,lat,group=group)) +
