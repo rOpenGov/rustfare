@@ -3,7 +3,7 @@
 \title{List the currently available
 indicators from Rosstat Regional Statistics}
 \usage{
-  IndicatorRosstat(urli = "http://markuskainu.fi/material/data/rustfare/RosstatIndicatorData.RData")
+  IndicatorRosstat(urli = "http://research.muuankarski.org/rustfare/data/RosstatIndicatorData.RData")
 }
 \arguments{
   \item{urli}{is the url address to the data}
