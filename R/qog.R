@@ -57,8 +57,10 @@ IndicatorQog <- function(urli = "http://www.qog.pol.gu.se/digitalAssets/1358/135
 #' @author Markus Kainu <markuskainu(at)gmail.com> 
 
 GetQog <- function(country = "Russia", indicator = "undp_hdi") {
-  qog.l <- read.csv("http://www.qog.pol.gu.se/digitalAssets/1358/1358067_qog_tsd_csv_v6apr11.csv", 
-                    sep = ";")
+  if(!exists("qog.l")) {
+    qog.l <- read.csv("http://www.qog.pol.gu.se/digitalAssets/1358/1358067_qog_tsd_csv_v6apr11.csv", 
+                      sep = ";")
+  }
   
   indicatorx <- c("cname","year",indicator)
   df <- subset(qog.l, 
